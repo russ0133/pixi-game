@@ -1,7 +1,6 @@
 import * as PIXI from "pixi.js";
-import { Constants, player_initial_position, TILESET } from "../utils/constants";
+import { Constants, MAX_HAYS_PER_ROW, player_initial_position, TILESET } from "../utils/constants";
 import Tile from "./Tile";
-import Player from "./Player";
 
 export interface ApplicationConfig {
   width: number;
@@ -31,6 +30,7 @@ export default class Game {
 
   setup = (div: Element) => {
     // Appends to dom
+
     div.appendChild(this.app.view as any as Node);
 
     // Sets background
@@ -38,15 +38,29 @@ export default class Game {
     this.app.stage.interactive = true;
 
     // Sets up the map tiles
+    const getTileType = () => {};
+
     this.map.forEach((column, colIndex) => {
+      let hayAmount = 0;
+
       column.forEach((row, rowIndex) => {
+        let isHay = 0;
+        let blockType = Math.random();
+        if (blockType > 0.8 && hayAmount < MAX_HAYS_PER_ROW) {
+          isHay = 1;
+          hayAmount++;
+          4;
+          console.log("hayAmount", hayAmount);
+        }
+
         const block = new Tile({
           app: this.app,
           x: rowIndex * Constants.BLOCK_SPACING + Constants.INITIAL_SPACING,
           y: colIndex * Constants.BLOCK_SPACING + Constants.INITIAL_SPACING,
-          sprite: "./assets/block.png",
+          sprite: isHay ? "./assets/hay.png" : "./assets/grass.png",
           col: colIndex,
           row: rowIndex,
+          type: blockType,
         });
 
         this.map[colIndex][rowIndex] = block;
@@ -56,7 +70,7 @@ export default class Game {
     console.log("App and tileset initialized.");
   };
 
-  getApplication = () => {
+  getRootObject = () => {
     return this.app;
   };
 

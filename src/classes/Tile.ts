@@ -1,19 +1,20 @@
 import * as PIXI from "pixi.js";
 
-interface PlayerConfig {
+interface TileConfig {
   x: number;
   y: number;
   sprite: string;
   col: number;
   row: number;
+  type: number;
 }
 
 export default class Tile {
   tile: PIXI.Sprite;
-  config: PlayerConfig;
+  config: TileConfig;
 
-  constructor({ app, x, y, sprite, col, row }) {
-    this.config = { x, y, sprite, col, row };
+  constructor({ app, x, y, sprite, col, row, type }) {
+    this.config = { x, y, sprite, col, row, type };
 
     const tile = PIXI.Sprite.from(sprite);
     tile.anchor.set(0.5);

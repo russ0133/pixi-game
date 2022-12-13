@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "target": "es6",
+    "moduleResolution": "node",
+    "module": "CommonJS",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "types": ["pixi.js"]
+  },
+  "include": ["src"]
+}

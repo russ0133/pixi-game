@@ -1,0 +1,14 @@
+body {
+  display: flex;
+  flex-direction: column;
+  background-color: whitesmoke;
+  align-items: center;
+}
+
+#app {
+  height: 500px;
+  width: 75vw;
+}
+
+.center {
+}

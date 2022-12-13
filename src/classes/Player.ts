@@ -55,9 +55,6 @@ export default class Player {
     }
   }
 
-  getPosition() {
-    return { x: this.player.x, y: this.player.y };
-  }
   getPlayerObject() {
     return this.player;
   }

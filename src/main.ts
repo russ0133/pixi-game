@@ -20,7 +20,7 @@ const play = () => {
   const player = new Player({
     app,
     initialTile: map[0][0],
-    sprite: "./assets/BlockYellow.png",
+    sprite: "./assets/tank.png",
   });
 
   function movement(event) {

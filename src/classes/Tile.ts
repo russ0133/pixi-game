@@ -9,38 +9,26 @@ interface PlayerConfig {
 }
 
 export default class Tile {
-  player: PIXI.Sprite;
+  tile: PIXI.Sprite;
   config: PlayerConfig;
+
   constructor({ app, x, y, sprite, col, row }) {
     this.config = { x, y, sprite, col, row };
 
-    const player = PIXI.Sprite.from(sprite);
-    player.anchor.set(0.5);
-    player.x = x;
-    player.y = y;
+    const tile = PIXI.Sprite.from(sprite);
+    tile.anchor.set(0.5);
+    tile.x = x;
+    tile.y = y;
 
-    this.player = player;
-    app.stage.addChild(player);
-  }
-
-  move({ direction, positive, amount }: { direction: string; positive: boolean; amount: number }) {
-    if (positive) this.player[direction] += amount;
-    else this.player[direction] -= amount;
+    this.tile = tile;
+    app.stage.addChild(tile);
   }
 
   getPosition() {
-    return { x: this.player.x, y: this.player.y };
+    return { x: this.tile.x, y: this.tile.y };
   }
 
-  getRow() {
-    return this.config.row;
-  }
-
-  getCol() {
-    return this.config.col;
-  }
-
-  getPlayer() {
-    return this.player;
+  getTileObject() {
+    return this.tile;
   }
 }

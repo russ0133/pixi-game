@@ -1,5 +1,7 @@
 import * as PIXI from "pixi.js";
-import { Directions, PlayerConfig } from "../utils/globals";
+import { bullets, map } from "../main";
+import { Directions, PlayerConfig, TankTypes } from "../utils/globals";
+import Bullet from "./Bullet";
 import Tile from "./Tile";
 
 interface IPlayer {
@@ -8,11 +10,13 @@ interface IPlayer {
   currentRow: number;
   currentColumn: number;
   facing: Directions;
+  type: TankTypes;
 }
 
 export default class Player {
   #player: PIXI.Sprite;
   #config: IPlayer;
+  app: PIXI.Application<PIXI.ICanvas>;
 
   constructor(pt: { app: PIXI.Application<PIXI.ICanvas>; initialTile: Tile; sprite: string }) {
     this.#config = {
@@ -21,6 +25,7 @@ export default class Player {
       currentColumn: PlayerConfig.InitialCol,
       currentRow: PlayerConfig.InitialRow,
       facing: "right",
+      type: "green",
     };
 
     const playerEntity = PIXI.Sprite.from(this.#config.sprite);
@@ -29,8 +34,26 @@ export default class Player {
     playerEntity.x = this.#config.initialTile.getPosition().x;
     playerEntity.y = this.#config.initialTile.getPosition().y;
 
+    this.app = pt.app;
     this.#player = playerEntity;
     pt.app.stage.addChild(this.#player);
+  }
+
+  transform() {
+    switch (this.#config.type) {
+      case "green":
+        this.#player.tint = 0xff0000;
+        this.#config.type = "red";
+        break;
+      case "blue":
+        this.#player.tint = 0xffffff;
+        this.#config.type = "green";
+        break;
+      case "red":
+        this.#player.tint = 0x277ffc;
+        this.#config.type = "blue";
+        break;
+    }
   }
 
   /** Moves the player in a selected direction if not obstructed; rotates the sprite onto that direction. */
@@ -105,11 +128,44 @@ export default class Player {
     }
   }
 
+  fire() {
+    const getBulletQuantity = () => {
+      if (this.#config.type == "red") return 1;
+      else if (this.#config.type == "blue") return 2;
+      else return 2;
+    };
+
+    let bullet = new Bullet(this.app, this, map);
+    bullets.push(bullet);
+
+    if (this.#config.type != "green") {
+      let bulletsFired = 0;
+      const bulletInterval = setInterval(() => {
+        bulletsFired++;
+        let bullet = new Bullet(this.app, this, map);
+        bullets.push(bullet);
+        if (bulletsFired >= getBulletQuantity()) window.clearInterval(bulletInterval);
+      }, 200);
+    }
+  }
+
   /** Returns the PIXI.Sprite object. */
   getRootObject() {
     return this.#player;
   }
 
+  getDamageValue() {
+    switch (this.#config.type) {
+      case "blue":
+        return 20;
+      case "red":
+        return 10;
+      case "green":
+        return 25;
+      default:
+        return 10;
+    }
+  }
   /** Returns the direction the player is facing. */
   getFacingDirection() {
     return this.#config.facing;

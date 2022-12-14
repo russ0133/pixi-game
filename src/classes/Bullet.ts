@@ -4,7 +4,9 @@ import { Directions, Sprites, TileTypes } from "../utils/globals";
 import Tile from "./Tile";
 
 export interface IBullet {
+  // ! Direction and Damage must be set locally here in case the origin player/object changes facing or tank type while the bullet is flying.
   projectileFacing: Directions;
+  bulletDamageValue: number;
 }
 
 export default class Bullet {
@@ -30,22 +32,28 @@ export default class Bullet {
     const bullet = PIXI.Sprite.from(Sprites.Bullet);
 
     this.origin = origin;
-    this.#config = { projectileFacing: this.origin.getFacingDirection() };
+    this.#config = {
+      projectileFacing: this.origin.getFacingDirection(),
+      bulletDamageValue: this.origin.getDamageValue(),
+    };
     this.dead = false;
 
-    //  Gets valid, collidable targets depending on origin's facing direction and stores them in this.target variable.
+    //  Logic for finding valid targets. (Hays and Walls)
     if (this.#config.projectileFacing == "right" || this.#config.projectileFacing == "left") {
+      //  In case projectile is facing right or left, maps over all tiles in the horizontal direction.
       const collidableTiles = tiles[origin.getPosition().column].map((tile) => {
         if (tile.getType() == TileTypes.Hay || tile.getType() == TileTypes.Wall) return tile;
       });
 
       this.target = collidableTiles;
     } else {
+      // In case projectile is facing up or down, maps over all tiles in the vertical direction.
       const collidableTiles = tiles.map((column) => {
         const type = column[origin.getPosition().row].getType();
         if (type == TileTypes.Hay || type == TileTypes.Wall)
           return column[origin.getPosition().row];
       });
+
       this.target = collidableTiles;
     }
 
@@ -61,10 +69,10 @@ export default class Bullet {
 
   /** @method tick - Handles collision logic with collidable tiles. */
   tick() {
-    this.target.forEach((t) => {
-      if (t === undefined) return;
-      if (this.#bullet.getBounds().contains(t.getPosition().x, t.getPosition().y)) {
-        t.setTint();
+    this.target.forEach((tile) => {
+      if (tile === undefined) return;
+      if (this.#bullet.getBounds().contains(tile.getPosition().x, tile.getPosition().y)) {
+        tile.damage(this.#config.bulletDamageValue);
         this.dead = true;
       }
     });

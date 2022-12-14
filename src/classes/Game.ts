@@ -40,9 +40,11 @@ export default class Game {
       return Sprites.Grass;
     };
 
+    let globalHayAmount = 0;
+    let globalWallAmount = 0;
     this.map.forEach((column, colIndex) => {
-      let hayAmount = 0;
-      let wallAmount = 0;
+      let columnHayAmount = 0;
+      let columnWallAmount = 0;
 
       column.forEach((row, rowIndex) => {
         let tileType = TileTypes.Grass;
@@ -50,14 +52,21 @@ export default class Game {
         //  Randomizes the tile type, taking into consideration the maximum amount of X tile and the maximum amount of X tile in each Row
         const random = Math.random();
         if (random > TileConfig.RandomGenerationLikeliness) {
-          if (hayAmount < TileConfig.MaxHaysPerRow) {
+          if (
+            columnHayAmount < TileConfig.MaxHaysPerRow ||
+            globalHayAmount < TileConfig.hayQuantityModifier
+          ) {
+            console.log("globalHayAmount: ", globalHayAmount);
+            console.log("localHayAmount:", columnHayAmount);
             tileType = TileTypes.Hay;
-            hayAmount++;
+            columnHayAmount++;
+            globalHayAmount++;
           }
         } else if (random < TileConfig.RandomGenerationLikeliness * 0.2) {
-          if (wallAmount < TileConfig.MaxWalls) {
+          if (columnWallAmount < TileConfig.wallQuantityModifier) {
             tileType = TileTypes.Wall;
-            wallAmount++;
+            columnWallAmount++;
+            globalWallAmount++;
           }
         }
 

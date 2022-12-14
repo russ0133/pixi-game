@@ -15,15 +15,16 @@ export enum PlayerConfig {
   InitialRow = 0,
   InitialCol = 0,
 }
+
 export enum TileConfig {
   Margin = 25,
   Padding = 50,
 
-  MaxHays = 50,
-  MaxHaysPerRow = TileConfig.MaxHays / TilesetSchema.length / 2,
+  hayQuantityModifier = 50,
+  MaxHaysPerRow = TileConfig.hayQuantityModifier / TilesetSchema.length / 2,
 
-  MaxWalls = 50,
-  MaxWallsPerRow = TileConfig.MaxWalls / TilesetSchema.length,
+  wallQuantityModifier = 50,
+  MaxWallsPerRow = TileConfig.wallQuantityModifier / TilesetSchema.length,
 
   RandomGenerationLikeliness = 0.76,
 }
@@ -44,3 +45,6 @@ export enum TileTypes {
 }
 
 export type Directions = "right" | "up" | "left" | "down";
+export type TankTypes = "red" | "blue" | "green";
+
+export const HealthColors = [0x11ff00, 0xffef08, 0xff8800, 0xff2200, 0xff0000];

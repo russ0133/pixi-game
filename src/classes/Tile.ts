@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Sprites } from "../utils/globals";
+import { HealthColors, TileTypes } from "../utils/globals";
 
 interface TileConfig {
   x: number;
@@ -8,6 +8,7 @@ interface TileConfig {
   col: number;
   row: number;
   type: number;
+  health: number;
 }
 
 export default class Tile {
@@ -24,7 +25,15 @@ export default class Tile {
     row: number;
     type: number;
   }) {
-    this.#config = { x: pt.x, y: pt.y, sprite: pt.sprite, col: pt.col, row: pt.row, type: pt.type };
+    this.#config = {
+      x: pt.x,
+      y: pt.y,
+      sprite: pt.sprite,
+      col: pt.col,
+      row: pt.row,
+      type: pt.type,
+      health: 100,
+    };
 
     const tile = PIXI.Sprite.from(this.#config.sprite);
 
@@ -52,9 +61,26 @@ export default class Tile {
     return this.#config.type;
   }
 
-  setTint() {
-    this.#tile.tint = Math.random() * 0xffffff;
-    /*     const texture = PIXI.Texture.from("assets/image.png");
-    this.#tile.texture = texture; */
+  damage(dmg: number) {
+    const setHealthColor = () => {
+      const health = this.#config.health;
+      console.log(health);
+      if (health >= 80) this.#tile.tint = HealthColors[0];
+      if (health >= 60 && health < 80) this.#tile.tint = HealthColors[1];
+      if (health >= 40 && health < 59) this.#tile.tint = HealthColors[2];
+      if (health >= 20 && health < 40) this.#tile.tint = HealthColors[3];
+      if (health >= 1 && health < 20) this.#tile.tint = HealthColors[4];
+    };
+    if (this.#config.type == TileTypes.Hay) {
+      this.#config.health -= dmg;
+      setHealthColor();
+
+      if (this.#config.health < 1) {
+        const texture = PIXI.Texture.from("./assets/grass.png");
+        this.#tile.tint = 0xffffff;
+        this.#tile.texture = texture;
+        this.#config.type = TileTypes.Grass;
+      }
+    }
   }
 }

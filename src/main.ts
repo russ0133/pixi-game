@@ -16,11 +16,11 @@ const game = new Game({
 });
 
 export const app = game.getRootObject();
-const map = game.getTiles() as Array<Tile[]>;
+export const map = game.getTiles() as Array<Tile[]>;
 
 export let bullets: Array<Bullet> = [];
 
-function gameLoop(player: Player) {
+function gameLoop() {
   fnBulletLogic();
 }
 
@@ -33,22 +33,24 @@ function play() {
     sprite: Sprites.Player,
   });
 
-  function handleMovement(event: KeyboardEvent) {
+  function handleKeyboard(event: KeyboardEvent) {
     const key = event.key.toLowerCase();
     if (key == "a" || key == "arrowleft") player.move({ direction: "left", tiles: map });
     else if (key == "d" || key == "arrowright") player.move({ direction: "right", tiles: map });
     else if (key == "s" || key == "arrowdown") player.move({ direction: "down", tiles: map });
     else if (key == "w" || key == "arrowup") player.move({ direction: "up", tiles: map });
+    else if (key == "w" || key == "arrowup") player.move({ direction: "up", tiles: map });
+    else if (key == "t") player.transform();
+    else if (key == " ") player.fire();
   }
 
-  function handleFireBullet() {
-    let bullet = new Bullet(app, player, map);
-    bullets.push(bullet);
+  function handleMouse() {
+    player.fire();
   }
 
-  window.addEventListener("keydown", handleMovement);
-  app.stage.on("pointerdown", handleFireBullet);
-  app.ticker.add(() => gameLoop(player));
+  window.addEventListener("keydown", handleKeyboard);
+  app.stage.on("pointerdown", handleMouse);
+  app.ticker.add(gameLoop);
 }
 
 window.onload = () => {

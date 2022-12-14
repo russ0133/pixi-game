@@ -33,6 +33,7 @@ export default class Player {
     pt.app.stage.addChild(this.#player);
   }
 
+  /** Moves the player in a selected direction if not obstructed; rotates the sprite onto that direction. */
   move({ direction, tiles }: { direction: string; tiles: Array<Tile[]> }) {
     const { currentColumn: curCol, currentRow: curRow } = this.#config;
 
@@ -45,15 +46,14 @@ export default class Player {
 
     const unflipTexture = () => (this.#player.scale.x === -1 ? (this.#player.scale.x = 1) : null);
     const isNextTilePassable = (Tile: Tile) => {
-      if (Tile.getTileType() != 0) return false;
+      if (Tile.getType() != 0) return false;
       else return true;
     };
 
     switch (direction) {
       case "left": {
-        const nextTile = tiles[curCol][curRow - 1];
-
         if (curRow - 1 < 0) break;
+        const nextTile = tiles[curCol][curRow - 1];
         if (!isNextTilePassable(nextTile)) break;
 
         this.#player.x = nextTile.getPosition().x;
@@ -64,9 +64,8 @@ export default class Player {
       }
 
       case "right": {
-        const nextTile = tiles[curCol][curRow + 1];
-
         if (curRow + 1 < 0) break;
+        const nextTile = tiles[curCol][curRow + 1];
         if (!isNextTilePassable(nextTile)) break;
 
         this.#player.x = nextTile.getPosition().x;
@@ -78,9 +77,8 @@ export default class Player {
       }
 
       case "down": {
-        const nextTile = tiles[curCol + 1][curRow];
-
         if (curCol + 1 < 0) break;
+        const nextTile = tiles[curCol + 1][curRow];
         if (!isNextTilePassable(nextTile)) break;
 
         this.#player.y = nextTile.getPosition().y;
@@ -92,9 +90,8 @@ export default class Player {
       }
 
       case "up": {
-        const nextTile = tiles[curCol - 1][curRow];
-
         if (curCol - 1 < 0) break;
+        const nextTile = tiles[curCol - 1][curRow];
         if (!isNextTilePassable(nextTile)) break;
 
         this.#player.y = nextTile.getPosition().y;
@@ -107,14 +104,17 @@ export default class Player {
     }
   }
 
+  /** Returns the PIXI.Sprite object. */
   getRootObject() {
     return this.#player;
   }
 
+  /** Returns the direction the player is facing. */
   getFacingDirection() {
     return this.#config.facing;
   }
 
+  /** Returns the tile's X and Y position as a object x, y. */
   getPosition() {
     return { x: this.#player.x, y: this.#player.y };
   }

@@ -10,7 +10,7 @@ interface TileConfig {
 }
 
 export default class Tile {
-  tile: PIXI.Sprite;
+  #tile: PIXI.Sprite;
   #config: TileConfig;
 
   constructor(pt: {
@@ -29,19 +29,22 @@ export default class Tile {
     tile.x = this.#config.x;
     tile.y = this.#config.y;
 
-    this.tile = tile;
+    this.#tile = tile;
     pt.app.stage.addChild(tile);
   }
 
+  /** Returns the tile's X and Y position as a object x, y. */
   getPosition() {
-    return { x: this.tile.x, y: this.tile.y };
+    return { x: this.#tile.x, y: this.#tile.y };
   }
 
-  getTileObject() {
-    return this.tile;
+  /** Returns the PIXI.Sprite object. */
+  getRootObject() {
+    return this.#tile;
   }
 
-  getTileType() {
+  /** Returns the Tile type. */
+  getType() {
     return this.#config.type;
   }
 }

@@ -19,8 +19,13 @@ export enum TileConfig {
   Margin = 25,
   Padding = 50,
 
-  MaxHays = 60,
-  MaxHaysPerRow = TileConfig.MaxHays / TilesetSchema.length,
+  MaxHays = 50,
+  MaxHaysPerRow = TileConfig.MaxHays / TilesetSchema.length / 2,
+
+  MaxWalls = 50,
+  MaxWallsPerRow = TileConfig.MaxWalls / TilesetSchema.length,
+
+  RandomGenerationLikeliness = 0.76,
 }
 
 export enum Sprites {
@@ -29,6 +34,7 @@ export enum Sprites {
   Bullet = "./assets/bullet.png",
   Hay = "./assets/hay.png",
   Grass = "./assets/grass.png",
+  Wall = "./assets/wall.png",
 }
 
 export enum TileTypes {

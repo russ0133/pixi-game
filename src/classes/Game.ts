@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Sprites, TileConfig, TilesetSchema } from "../utils/globals";
+import { PlayerConfig, Sprites, TileConfig, TilesetSchema, TileTypes } from "../utils/globals";
 import Tile from "./Tile";
 
 export interface ApplicationConfig {
@@ -29,37 +29,50 @@ export default class Game {
   }
 
   setup = (div: Element) => {
-    // Appends to dom
-
     div.appendChild(this.app.view as any as Node);
-
-    // Sets background
     this.setBackground(this.#config.background);
     this.app.stage.interactive = true;
 
-    // Sets up the map tiles
-    const getTileType = () => {};
+    /** * Returns the correct tile type.*/
+    const getTileType = (type: TileTypes) => {
+      if (type == TileTypes.Hay) return Sprites.Hay;
+      if (type == TileTypes.Wall) return Sprites.Wall;
+      return Sprites.Grass;
+    };
 
     this.map.forEach((column, colIndex) => {
       let hayAmount = 0;
+      let wallAmount = 0;
 
       column.forEach((row, rowIndex) => {
-        let isHay = 0;
-        let blockType = Math.random();
-        if (blockType > 0.8 && hayAmount < TileConfig.MaxHaysPerRow) {
-          isHay = 1;
-          hayAmount++;
-          console.log("hayAmount", hayAmount);
+        let tileType = TileTypes.Grass;
+
+        //  Randomizes the tile type, taking into consideration the maximum amount of X tile and the maximum amount of X tile in each Row
+        const random = Math.random();
+        if (random > TileConfig.RandomGenerationLikeliness) {
+          if (hayAmount < TileConfig.MaxHaysPerRow) {
+            tileType = TileTypes.Hay;
+            hayAmount++;
+          }
+        } else if (random < TileConfig.RandomGenerationLikeliness * 0.2) {
+          if (wallAmount < TileConfig.MaxWalls) {
+            tileType = TileTypes.Wall;
+            wallAmount++;
+          }
         }
+
+        //  Makes sure the initial player position is always a Grass
+        if (rowIndex == PlayerConfig.InitialRow && colIndex == PlayerConfig.InitialCol)
+          tileType = 0;
 
         const block = new Tile({
           app: this.app,
           x: rowIndex * TileConfig.Padding + TileConfig.Margin,
           y: colIndex * TileConfig.Padding + TileConfig.Margin,
-          sprite: isHay ? Sprites.Hay : Sprites.Grass,
+          sprite: getTileType(tileType),
           col: colIndex,
           row: rowIndex,
-          type: isHay,
+          type: tileType,
         });
 
         this.map[colIndex][rowIndex] = block;
@@ -69,18 +82,22 @@ export default class Game {
     console.log("App and tileset initialized.");
   };
 
+  /** Returns the PIXI.Application object. */
   getRootObject = () => {
     return this.app;
   };
 
+  /** Returns the Game configuration. */
   getData = () => {
     return this.#config;
   };
 
+  /** Returns the Game Tiles. */
   getTiles = () => {
     return this.map;
   };
 
+  /** Gets a texture path as string and sets the Background sprite. */
   setBackground = (texture: string) => {
     const bgTexture = PIXI.Texture.from(texture);
     const bgSprite = new PIXI.TilingSprite(

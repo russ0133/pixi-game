@@ -26,6 +26,8 @@ export default class Bullet {
     this.#bullet = bullet;
     app.stage.addChild(bullet);
   }
+
+  /** Moves the bullet sprite in a certain direction depending on the direction the origin: Player was facing when object was instantiated. */
   move() {
     switch (this.#config.projectileFacing) {
       case "down": {

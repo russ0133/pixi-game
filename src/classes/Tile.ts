@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import { Sprites } from "../utils/globals";
 
 interface TileConfig {
   x: number;
@@ -12,6 +13,7 @@ interface TileConfig {
 export default class Tile {
   #tile: PIXI.Sprite;
   #config: TileConfig;
+  app: PIXI.Application<PIXI.ICanvas>;
 
   constructor(pt: {
     app: PIXI.Application<PIXI.ICanvas>;
@@ -25,11 +27,13 @@ export default class Tile {
     this.#config = { x: pt.x, y: pt.y, sprite: pt.sprite, col: pt.col, row: pt.row, type: pt.type };
 
     const tile = PIXI.Sprite.from(this.#config.sprite);
+
     tile.anchor.set(0.5);
     tile.x = this.#config.x;
     tile.y = this.#config.y;
 
     this.#tile = tile;
+    this.app = pt.app;
     pt.app.stage.addChild(tile);
   }
 
@@ -46,5 +50,11 @@ export default class Tile {
   /** Returns the Tile type. */
   getType() {
     return this.#config.type;
+  }
+
+  setTint() {
+    this.#tile.tint = Math.random() * 0xffffff;
+    /*     const texture = PIXI.Texture.from("assets/image.png");
+    this.#tile.texture = texture; */
   }
 }

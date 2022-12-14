@@ -5,6 +5,7 @@ import Player from "./classes/Player";
 import Tile from "./classes/Tile";
 import { PlayerConfig, Sprites } from "./utils/globals";
 import Bullet from "./classes/Bullet";
+import { fnBulletLogic } from "./logic/BulletLogic";
 
 const gameHtmlElement = document.querySelector("#app");
 
@@ -14,16 +15,13 @@ const game = new Game({
   background: Sprites.Background,
 });
 
-const app = game.getRootObject();
+export const app = game.getRootObject();
 const map = game.getTiles() as Array<Tile[]>;
 
-const bullets: Array<Bullet> = [];
+export let bullets: Array<Bullet> = [];
 
-function gameLoop() {
-  if (bullets.length > 0)
-    bullets.forEach((bullet) => {
-      bullet.move();
-    });
+function gameLoop(player: Player) {
+  fnBulletLogic();
 }
 
 function play() {
@@ -36,7 +34,6 @@ function play() {
   });
 
   function handleMovement(event: KeyboardEvent) {
-    console.log(event.key);
     const key = event.key.toLowerCase();
     if (key == "a" || key == "arrowleft") player.move({ direction: "left", tiles: map });
     else if (key == "d" || key == "arrowright") player.move({ direction: "right", tiles: map });
@@ -45,13 +42,13 @@ function play() {
   }
 
   function handleFireBullet() {
-    let bullet = new Bullet(app, player);
+    let bullet = new Bullet(app, player, map);
     bullets.push(bullet);
   }
 
-  window.addEventListener("keydown", (e) => handleMovement(e));
+  window.addEventListener("keydown", handleMovement);
   app.stage.on("pointerdown", handleFireBullet);
-  app.ticker.add(gameLoop);
+  app.ticker.add(() => gameLoop(player));
 }
 
 window.onload = () => {

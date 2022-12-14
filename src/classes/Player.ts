@@ -53,52 +53,53 @@ export default class Player {
     switch (direction) {
       case "left": {
         if (curRow - 1 < 0) break;
+        this.#config.facing = "left";
+        flipTexture();
+
         const nextTile = tiles[curCol][curRow - 1];
         if (!isNextTilePassable(nextTile)) break;
 
         this.#player.x = nextTile.getPosition().x;
         this.#config.currentRow = this.#config.currentRow - 1;
-        this.#config.facing = "left";
-        flipTexture();
         break;
       }
 
       case "right": {
         if (curRow + 1 < 0) break;
+        this.#player.angle = 0;
+        this.#config.facing = "right";
+        unflipTexture();
         const nextTile = tiles[curCol][curRow + 1];
         if (!isNextTilePassable(nextTile)) break;
 
         this.#player.x = nextTile.getPosition().x;
         this.#config.currentRow = this.#config.currentRow + 1;
-        this.#player.angle = 0;
-        this.#config.facing = "right";
-        unflipTexture();
         break;
       }
 
       case "down": {
         if (curCol + 1 < 0) break;
+        this.#player.angle = 90;
+        this.#config.facing = "down";
+        unflipTexture();
         const nextTile = tiles[curCol + 1][curRow];
         if (!isNextTilePassable(nextTile)) break;
 
         this.#player.y = nextTile.getPosition().y;
         this.#config.currentColumn = this.#config.currentColumn + 1;
-        this.#player.angle = 90;
-        this.#config.facing = "down";
-        unflipTexture();
         break;
       }
 
       case "up": {
         if (curCol - 1 < 0) break;
+        this.#player.angle = -90;
+        this.#config.facing = "up";
+        unflipTexture();
         const nextTile = tiles[curCol - 1][curRow];
         if (!isNextTilePassable(nextTile)) break;
 
         this.#player.y = nextTile.getPosition().y;
         this.#config.currentColumn = this.#config.currentColumn - 1;
-        this.#player.angle = -90;
-        this.#config.facing = "up";
-        unflipTexture();
         break;
       }
     }
@@ -114,8 +115,13 @@ export default class Player {
     return this.#config.facing;
   }
 
-  /** Returns the tile's X and Y position as a object x, y. */
+  /** Returns the sprite's X and Y position as a object x, y. Along with the object current row (index) and current column (index) */
   getPosition() {
-    return { x: this.#player.x, y: this.#player.y };
+    return {
+      x: this.#player.x,
+      y: this.#player.y,
+      row: this.#config.currentRow,
+      column: this.#config.currentColumn,
+    };
   }
 }

@@ -1,0 +1,5 @@
+1: Account for Collision on Hays and Walls
+2: Add Walls
+3: Add HP to Hays
+4: Account for Collision on Bullets
+5: Make Bullets take HP off of Hays

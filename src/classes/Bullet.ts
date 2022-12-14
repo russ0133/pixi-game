@@ -1,16 +1,19 @@
 import Player from "./Player";
 import * as PIXI from "pixi.js";
+import { Config } from "../utils/globals";
 
-interface BulletInterface {
+export interface IBullet {
   origin: Player;
+  app: PIXI.Application<PIXI.ICanvas>;
 }
 export default class Bullet {
   app: PIXI.Application<PIXI.ICanvas>;
-  bullet: PIXI.Sprite;
+  #bullet: PIXI.Sprite;
   origin: Player;
-  constructor(app, origin) {
+
+  constructor(app: PIXI.Application<PIXI.ICanvas>, origin: Player) {
     console.log("Bullet created");
-    const bullet = PIXI.Sprite.from("./assets/bullet.png");
+    const bullet = PIXI.Sprite.from(Config.BulletSprite);
 
     this.origin = origin;
     this.app = app;
@@ -19,10 +22,10 @@ export default class Bullet {
     bullet.x = origin.getPosition().x;
     bullet.y = origin.getPosition().y;
 
-    this.bullet = bullet;
+    this.#bullet = bullet;
     app.stage.addChild(bullet);
   }
-  setPosition() {
-    this.bullet.y += 5;
+  move() {
+    this.#bullet.y += 5;
   }
 }

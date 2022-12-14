@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Constants, MAX_HAYS_PER_ROW, player_initial_position, TILESET } from "../utils/constants";
+import { Config, Constants, MAX_HAYS_PER_ROW, TilesetSchema } from "../utils/globals";
 import Tile from "./Tile";
 
 export interface ApplicationConfig {
@@ -15,17 +15,17 @@ export default class Game {
   config: ApplicationConfig;
   map: Array<rows>;
 
-  constructor({ width, height, background }) {
-    this.config = { width, height, background };
+  constructor(pt: { width: number; height: number; background: string }) {
+    this.config = pt;
 
     this.app = new PIXI.Application({
-      width: width,
-      height: height,
+      width: this.config.width,
+      height: this.config.height,
       backgroundColor: 0xaaaaaa,
       antialias: true,
     });
 
-    this.map = TILESET;
+    this.map = TilesetSchema;
   }
 
   setup = (div: Element) => {
@@ -55,9 +55,9 @@ export default class Game {
 
         const block = new Tile({
           app: this.app,
-          x: rowIndex * Constants.BLOCK_SPACING + Constants.INITIAL_SPACING,
-          y: colIndex * Constants.BLOCK_SPACING + Constants.INITIAL_SPACING,
-          sprite: isHay ? "./assets/hay.png" : "./assets/grass.png",
+          x: rowIndex * Constants.Padding + Constants.Margins,
+          y: colIndex * Constants.Padding + Constants.Margins,
+          sprite: isHay ? Config.HaySprite : Config.GrassSprite,
           col: colIndex,
           row: rowIndex,
           type: blockType,

@@ -3,7 +3,7 @@ import * as PIXI from "pixi.js";
 import Game from "./classes/Game";
 import Player from "./classes/Player";
 import Tile from "./classes/Tile";
-import { Config } from "./utils/globals";
+import { PlayerConfig, Sprites } from "./utils/globals";
 import Bullet from "./classes/Bullet";
 
 const gameHtmlElement = document.querySelector("#app");
@@ -11,13 +11,12 @@ const gameHtmlElement = document.querySelector("#app");
 const game = new Game({
   width: gameHtmlElement!.clientWidth,
   height: gameHtmlElement!.clientHeight,
-  background: Config.Background,
+  background: Sprites.Background,
 });
 
 const app = game.getRootObject();
 const map = game.getTiles() as Array<Tile[]>;
 
-const PLAYER_INITIAL_POSITION = map[0][0];
 const bullets: Array<Bullet> = [];
 
 function gameLoop() {
@@ -28,10 +27,12 @@ function gameLoop() {
 }
 
 function play() {
+  const PLAYER_INITIAL_POSITION = map[PlayerConfig.InitialCol][PlayerConfig.InitialRow];
+
   const player = new Player({
     app,
     initialTile: PLAYER_INITIAL_POSITION,
-    sprite: Config.PlayerSprite,
+    sprite: Sprites.Player,
   });
 
   function handleMovement(event: KeyboardEvent) {

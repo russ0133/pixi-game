@@ -1,21 +1,22 @@
 import Player from "./Player";
 import * as PIXI from "pixi.js";
-import { Config } from "../utils/globals";
+import { Directions, Sprites } from "../utils/globals";
 
 export interface IBullet {
-  origin: Player;
-  app: PIXI.Application<PIXI.ICanvas>;
+  projectileFacing: Directions;
 }
 export default class Bullet {
   app: PIXI.Application<PIXI.ICanvas>;
   #bullet: PIXI.Sprite;
+  #config: IBullet;
   origin: Player;
 
   constructor(app: PIXI.Application<PIXI.ICanvas>, origin: Player) {
-    console.log("Bullet created");
-    const bullet = PIXI.Sprite.from(Config.BulletSprite);
+    const bullet = PIXI.Sprite.from(Sprites.Bullet);
 
     this.origin = origin;
+    this.#config = { projectileFacing: this.origin.getFacingDirection() };
+
     this.app = app;
 
     bullet.anchor.set(0.42, 0.5);
@@ -26,6 +27,25 @@ export default class Bullet {
     app.stage.addChild(bullet);
   }
   move() {
-    this.#bullet.y += 5;
+    switch (this.#config.projectileFacing) {
+      case "down": {
+        this.#bullet.y += 5;
+        break;
+      }
+      case "right": {
+        this.#bullet.angle = 90;
+        this.#bullet.x += 5;
+        break;
+      }
+      case "left": {
+        this.#bullet.angle = 90;
+        this.#bullet.x -= 5;
+        break;
+      }
+      case "up": {
+        this.#bullet.y -= 5;
+        break;
+      }
+    }
   }
 }

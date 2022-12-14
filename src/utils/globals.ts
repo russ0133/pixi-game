@@ -11,26 +11,30 @@ export const TilesetSchema = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ];
 
-export enum Constants {
-  Margins = 25,
+export enum PlayerConfig {
+  InitialRow = 0,
+  InitialCol = 0,
+}
+export enum TileConfig {
+  Margin = 25,
   Padding = 50,
+
   MaxHays = 60,
-  MaxHaysPerRow = Constants.MaxHays / TilesetSchema.length,
+  MaxHaysPerRow = TileConfig.MaxHays / TilesetSchema.length,
 }
 
-export enum Config {
+export enum Sprites {
   Background = "./assets/background.jpg",
-  PlayerSprite = "./assets/tank.png",
-  BulletSprite = "./assets/bullet.png",
-  HaySprite = "./assets/hay.png",
-  GrassSprite = "./assets/grass.png",
+  Player = "./assets/tank.png",
+  Bullet = "./assets/bullet.png",
+  Hay = "./assets/hay.png",
+  Grass = "./assets/grass.png",
 }
 
-export enum BlockTypes {
+export enum TileTypes {
   Grass = 0,
   Hay = 1,
   Wall = 2,
 }
 
-export const MAX_HAYS = 60;
-export const MAX_HAYS_PER_ROW = MAX_HAYS / TilesetSchema.length;
+export type Directions = "right" | "up" | "left" | "down";

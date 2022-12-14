@@ -1,82 +1,121 @@
 import * as PIXI from "pixi.js";
+import { Directions, PlayerConfig } from "../utils/globals";
 import Tile from "./Tile";
 
-interface PlayerConfig {
+interface IPlayer {
   initialTile: Tile;
   sprite: string;
-  curRow: number;
-  curCol: number;
+  currentRow: number;
+  currentColumn: number;
+  facing: Directions;
 }
 
 export default class Player {
-  player: PIXI.Sprite;
-  config: PlayerConfig;
+  #player: PIXI.Sprite;
+  #config: IPlayer;
 
-  constructor({ app, initialTile, sprite }) {
-    this.config = { initialTile, sprite, curRow: 0, curCol: 0 };
+  constructor(pt: { app: PIXI.Application<PIXI.ICanvas>; initialTile: Tile; sprite: string }) {
+    this.#config = {
+      initialTile: pt.initialTile,
+      sprite: pt.sprite,
+      currentColumn: PlayerConfig.InitialCol,
+      currentRow: PlayerConfig.InitialRow,
+      facing: "right",
+    };
 
-    const player = PIXI.Sprite.from(sprite);
-    player.anchor.set(0.42, 0.5);
+    const playerEntity = PIXI.Sprite.from(this.#config.sprite);
+    playerEntity.anchor.set(0.42, 0.5);
 
-    player.x = this.config.initialTile.getPosition().x;
-    player.y = this.config.initialTile.getPosition().y;
+    playerEntity.x = this.#config.initialTile.getPosition().x;
+    playerEntity.y = this.#config.initialTile.getPosition().y;
 
-    this.player = player;
-    app.stage.addChild(player);
+    this.#player = playerEntity;
+    pt.app.stage.addChild(this.#player);
   }
 
   move({ direction, tiles }: { direction: string; tiles: Array<Tile[]> }) {
-    const { curCol, curRow } = this.config;
+    const { currentColumn: curCol, currentRow: curRow } = this.#config;
 
     const flipTexture = () => {
-      if (this.player.scale.x !== -1) {
-        this.player.angle = 0;
-        this.player.scale.x *= -1;
+      if (this.#player.scale.x !== -1) {
+        this.#player.angle = 0;
+        this.#player.scale.x *= -1;
       }
     };
 
-    const unflipTexture = () => (this.player.scale.x === -1 ? (this.player.scale.x = 1) : null);
+    const unflipTexture = () => (this.#player.scale.x === -1 ? (this.#player.scale.x = 1) : null);
+    const isNextTilePassable = (Tile: Tile) => {
+      if (Tile.getTileType() != 0) return false;
+      else return true;
+    };
 
     switch (direction) {
-      case "left":
+      case "left": {
+        const nextTile = tiles[curCol][curRow - 1];
+
         if (curRow - 1 < 0) break;
-        this.player.x = tiles[curCol][curRow - 1].getPosition().x;
-        this.config.curRow = this.config.curRow - 1;
+        if (!isNextTilePassable(nextTile)) break;
+
+        this.#player.x = nextTile.getPosition().x;
+        this.#config.currentRow = this.#config.currentRow - 1;
+        this.#config.facing = "left";
         flipTexture();
-
         break;
+      }
 
-      case "right":
+      case "right": {
+        const nextTile = tiles[curCol][curRow + 1];
+
         if (curRow + 1 < 0) break;
-        this.player.x = tiles[curCol][curRow + 1].getPosition().x;
-        this.config.curRow = this.config.curRow + 1;
-        this.player.angle = 0;
+        if (!isNextTilePassable(nextTile)) break;
+
+        this.#player.x = nextTile.getPosition().x;
+        this.#config.currentRow = this.#config.currentRow + 1;
+        this.#player.angle = 0;
+        this.#config.facing = "right";
         unflipTexture();
         break;
+      }
 
-      case "down":
+      case "down": {
+        const nextTile = tiles[curCol + 1][curRow];
+
         if (curCol + 1 < 0) break;
-        this.player.y = tiles[curCol + 1][curRow].getPosition().y;
-        this.config.curCol = this.config.curCol + 1;
-        this.player.angle = 90;
-        unflipTexture();
-        break;
+        if (!isNextTilePassable(nextTile)) break;
 
-      case "up":
-        if (curCol - 1 < 0) break;
-        this.player.y = tiles[curCol - 1][curRow].getPosition().y;
-        this.config.curCol = this.config.curCol - 1;
-        this.player.angle = -90;
+        this.#player.y = nextTile.getPosition().y;
+        this.#config.currentColumn = this.#config.currentColumn + 1;
+        this.#player.angle = 90;
+        this.#config.facing = "down";
         unflipTexture();
         break;
+      }
+
+      case "up": {
+        const nextTile = tiles[curCol - 1][curRow];
+
+        if (curCol - 1 < 0) break;
+        if (!isNextTilePassable(nextTile)) break;
+
+        this.#player.y = nextTile.getPosition().y;
+        this.#config.currentColumn = this.#config.currentColumn - 1;
+        this.#player.angle = -90;
+        this.#config.facing = "up";
+        unflipTexture();
+        break;
+      }
     }
   }
 
   getRootObject() {
-    return this.player;
+    return this.#player;
+  }
+
+  getFacingDirection() {
+    return this.#config.facing;
   }
 
   getPosition() {
-    return { x: this.player.x, y: this.player.y };
+    return { x: this.#player.x, y: this.#player.y };
   }
 }

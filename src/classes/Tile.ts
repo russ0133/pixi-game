@@ -11,18 +11,26 @@ interface TileConfig {
 
 export default class Tile {
   tile: PIXI.Sprite;
-  config: TileConfig;
+  #config: TileConfig;
 
-  constructor({ app, x, y, sprite, col, row, type }) {
-    this.config = { x, y, sprite, col, row, type };
+  constructor(pt: {
+    app: PIXI.Application<PIXI.ICanvas>;
+    x: number;
+    y: number;
+    sprite: string;
+    col: number;
+    row: number;
+    type: number;
+  }) {
+    this.#config = { x: pt.x, y: pt.y, sprite: pt.sprite, col: pt.col, row: pt.row, type: pt.type };
 
-    const tile = PIXI.Sprite.from(sprite);
+    const tile = PIXI.Sprite.from(this.#config.sprite);
     tile.anchor.set(0.5);
-    tile.x = x;
-    tile.y = y;
+    tile.x = this.#config.x;
+    tile.y = this.#config.y;
 
     this.tile = tile;
-    app.stage.addChild(tile);
+    pt.app.stage.addChild(tile);
   }
 
   getPosition() {
@@ -31,5 +39,9 @@ export default class Tile {
 
   getTileObject() {
     return this.tile;
+  }
+
+  getTileType() {
+    return this.#config.type;
   }
 }

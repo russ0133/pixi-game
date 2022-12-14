@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Config, Constants, MAX_HAYS_PER_ROW, TilesetSchema } from "../utils/globals";
+import { Sprites, TileConfig, TilesetSchema } from "../utils/globals";
 import Tile from "./Tile";
 
 export interface ApplicationConfig {
@@ -12,15 +12,15 @@ type rows = number[] | Tile[];
 
 export default class Game {
   app: PIXI.Application;
-  config: ApplicationConfig;
+  #config: ApplicationConfig;
   map: Array<rows>;
 
   constructor(pt: { width: number; height: number; background: string }) {
-    this.config = pt;
+    this.#config = pt;
 
     this.app = new PIXI.Application({
-      width: this.config.width,
-      height: this.config.height,
+      width: this.#config.width,
+      height: this.#config.height,
       backgroundColor: 0xaaaaaa,
       antialias: true,
     });
@@ -34,7 +34,7 @@ export default class Game {
     div.appendChild(this.app.view as any as Node);
 
     // Sets background
-    this.setBackground(this.config.background);
+    this.setBackground(this.#config.background);
     this.app.stage.interactive = true;
 
     // Sets up the map tiles
@@ -46,21 +46,20 @@ export default class Game {
       column.forEach((row, rowIndex) => {
         let isHay = 0;
         let blockType = Math.random();
-        if (blockType > 0.8 && hayAmount < MAX_HAYS_PER_ROW) {
+        if (blockType > 0.8 && hayAmount < TileConfig.MaxHaysPerRow) {
           isHay = 1;
           hayAmount++;
-          4;
           console.log("hayAmount", hayAmount);
         }
 
         const block = new Tile({
           app: this.app,
-          x: rowIndex * Constants.Padding + Constants.Margins,
-          y: colIndex * Constants.Padding + Constants.Margins,
-          sprite: isHay ? Config.HaySprite : Config.GrassSprite,
+          x: rowIndex * TileConfig.Padding + TileConfig.Margin,
+          y: colIndex * TileConfig.Padding + TileConfig.Margin,
+          sprite: isHay ? Sprites.Hay : Sprites.Grass,
           col: colIndex,
           row: rowIndex,
-          type: blockType,
+          type: isHay,
         });
 
         this.map[colIndex][rowIndex] = block;
@@ -75,7 +74,7 @@ export default class Game {
   };
 
   getData = () => {
-    return this.config;
+    return this.#config;
   };
 
   getTiles = () => {

@@ -28,7 +28,7 @@ export default class Game {
     this.map = TilesetSchema;
   }
 
-  /** @method setup - Appends the PIXI.Applicatoin to @param div and then sets background and generates tiles. */
+  /** @method setup - Appends the PIXI.Application to @param div and then sets background and generates tiles. */
   setup = (div: Element) => {
     div.appendChild(this.app.view as any as Node);
     this.setBackground(this.#config.background);

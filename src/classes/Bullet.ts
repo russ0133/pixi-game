@@ -4,7 +4,6 @@ import { Directions, Sprites, TileTypes } from "../utils/globals";
 import Tile from "./Tile";
 
 export interface IBullet {
-  // ! Direction and Damage must be set locally here in case the origin player/object changes facing or tank type while the bullet is flying.
   projectileFacing: Directions;
   bulletDamageValue: number;
 }
@@ -33,6 +32,7 @@ export default class Bullet {
 
     this.origin = origin;
     this.#config = {
+      // ! Direction and Damage must be set locally here in case the origin player/object changes facing or tank type while the bullet is flying.
       projectileFacing: this.origin.getFacingDirection(),
       bulletDamageValue: this.origin.getDamageValue(),
     };

@@ -2,7 +2,7 @@
 
 👀 Displays a grid of Hays, Walls and Grass. A Player-controlled Sprite called 'tank' is moveable by using the keyboard WASD or Arrow keys. Spacebar key or Left Click shoots bullets from the player's object which can destroy Hays but not Walls. 'T' key changes the type of player's Sprite, which modifies the firing pattern.
 
-#### 🚀 Deployed [here]() on Github Pages.
+#### 🚀 Deployed [here](https://russ0133.github.io/pixi-game/) on Github Pages.
 
 ## API Reference
 

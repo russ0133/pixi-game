@@ -28,12 +28,13 @@ export default class Game {
     this.map = TilesetSchema;
   }
 
+  /** @method setup - Appends the PIXI.Applicatoin to @param div and then sets background and generates tiles. */
   setup = (div: Element) => {
     div.appendChild(this.app.view as any as Node);
     this.setBackground(this.#config.background);
     this.app.stage.interactive = true;
 
-    /** * Returns the correct tile type.*/
+    /** Returns the correct tile type.*/
     const getTileType = (type: TileTypes) => {
       if (type == TileTypes.Hay) return Sprites.Hay;
       if (type == TileTypes.Wall) return Sprites.Wall;
@@ -49,15 +50,13 @@ export default class Game {
       column.forEach((row, rowIndex) => {
         let tileType = TileTypes.Grass;
 
-        //  Randomizes the tile type, taking into consideration the maximum amount of X tile and the maximum amount of X tile in each Row
+        //  Randomizes the tile type. Takes into account maximum amount of 'Hay' and 'Wall' tiles per row/column and globally..
         const random = Math.random();
         if (random > TileConfig.RandomGenerationLikeliness) {
           if (
             columnHayAmount < TileConfig.MaxHaysPerRow ||
             globalHayAmount < TileConfig.hayQuantityModifier
           ) {
-            console.log("globalHayAmount: ", globalHayAmount);
-            console.log("localHayAmount:", columnHayAmount);
             tileType = TileTypes.Hay;
             columnHayAmount++;
             globalHayAmount++;

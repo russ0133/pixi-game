@@ -10,6 +10,10 @@ export const fnBulletLogic = () => {
 
   // Remove if dead
   for (let i = 0; i < bullets.length; i++) {
+    if (bullets[i].getRootObject().position.x < 0 || bullets[i].getRootObject().position.y < 0) {
+      bullets[i].dead = true;
+    }
+
     if (bullets[i].dead == true) {
       app.stage.removeChild(bullets[i].getRootObject());
       bullets.splice(i, 1);

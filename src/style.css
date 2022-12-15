@@ -11,4 +11,23 @@ body {
 }
 
 .center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.center .info {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: left;
+  align-self: flex-start;
+}
+
+.no-select {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
 }

@@ -14,8 +14,13 @@ interface IPlayer {
 }
 
 export default class Player {
+  /** @param player - The player PIXI.Sprite object. @private */
   #player: PIXI.Sprite;
+
+  /** @param config - Internal configuration, contains all necessary data.  @private */
   #config: IPlayer;
+
+  /** @param app - The Canvas/PIXI application. */
   app: PIXI.Application<PIXI.ICanvas>;
 
   constructor(pt: { app: PIXI.Application<PIXI.ICanvas>; initialTile: Tile; sprite: string }) {
@@ -39,6 +44,7 @@ export default class Player {
     pt.app.stage.addChild(this.#player);
   }
 
+  /** @method transform - Changes tank type */
   transform() {
     switch (this.#config.type) {
       case "green":
@@ -56,7 +62,7 @@ export default class Player {
     }
   }
 
-  /** Moves the player in a selected direction if not obstructed; rotates the sprite onto that direction. */
+  /** @method move - Moves the player in a selected direction if not obstructed; rotates the sprite onto that direction. */
   move({ direction, tiles }: { direction: string; tiles: Array<Tile[]> }) {
     const { currentColumn: curCol, currentRow: curRow } = this.#config;
 
@@ -128,6 +134,7 @@ export default class Player {
     }
   }
 
+  /** @method fire - Fires a bullet */
   fire() {
     const getBulletQuantity = () => {
       if (this.#config.type == "red") return 1;
@@ -149,11 +156,12 @@ export default class Player {
     }
   }
 
-  /** Returns the PIXI.Sprite object. */
+  /** @method getRootObject - Returns the PIXI.Sprite object. */
   getRootObject() {
     return this.#player;
   }
 
+  /** @method getDamageValue - Returns the correct damage value for each type of tank */
   getDamageValue() {
     switch (this.#config.type) {
       case "blue":
@@ -166,12 +174,12 @@ export default class Player {
         return 10;
     }
   }
-  /** Returns the direction the player is facing. */
+  /** @method getFacingDirection - Returns the direction the player is facing. */
   getFacingDirection() {
     return this.#config.facing;
   }
 
-  /** Returns the sprite's X and Y position as a object x, y. Along with the object current row (index) and current column (index) */
+  /** @method getPosition - Returns the sprite's X and Y position as a object x, y. Along with the object current row (index) and current column (index) */
   getPosition() {
     return {
       x: this.#player.x,

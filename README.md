@@ -31,6 +31,8 @@ Represents and handles logic regarding the Bullet's PIXI.Sprite. All classes are
 3. Once the 'fire' method on a Player class is called, a new Bullet class is instantiated.
 4. The game loop constantly checks for collisions between a Bullet instance and a Tile instance, moving any available Bullet instance. If a collision is detected between a Bullet instance and Tile instance, Tile.damage is called with parameter dmg as Bullet.#config.bulletDamageValue.
 
+Bullets are deleted once they leave the stage or hit a Wall/Hay.
+
 ## Run Locally
 
 Clone the project
